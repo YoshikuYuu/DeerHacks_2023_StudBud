@@ -1,0 +1,7 @@
+Big Idea: Personal Secretary Discord Bot
+
+1. Accounts
+2. Store tasks and deadlines
+3. Reminders (DMs)
+4. Point system with shop to reward meeting deadlines
+5. Google Calendar + Quercus

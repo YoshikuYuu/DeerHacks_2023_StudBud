@@ -9,3 +9,6 @@ Big Idea: Personal Secretary Discord Bot
 
 Discord Bot Token:
 MTEwMTMyNDY0MDg5MjI0NDAzMA.GpOKLH.1-G0Gu-hs9wgUPHKTpxbcDJyeXn3kDW9CC2xI0
+
+Invite Link:
+https://discord.com/api/oauth2/authorize?client_id=1101324640892244030&permissions=535059496128&scope=bot

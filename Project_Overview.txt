@@ -5,3 +5,7 @@ Big Idea: Personal Secretary Discord Bot
 3. Reminders (DMs)
 4. Point system with shop to reward meeting deadlines
 5. Google Calendar + Quercus
+
+
+Discord Bot Token:
+MTEwMTMyNDY0MDg5MjI0NDAzMA.GpOKLH.1-G0Gu-hs9wgUPHKTpxbcDJyeXn3kDW9CC2xI0

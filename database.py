@@ -1,3 +1,4 @@
+'''A collection of functions for StudBud that alter the database.'''
 import discord
 import random
 from discord.ext import commands

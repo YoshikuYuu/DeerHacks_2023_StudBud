@@ -99,6 +99,29 @@ def run_discord_bot():
     async def before_check_time():
         await bot.wait_until_ready()
 
+    items = {'test': 50, 'test2': 20, 'test3': 10}  # item name: price of item
+    money = 50  # add how much money the person has
 
+    @bot.event
+    async def on_ready():
+        print(f'We have logged in as {bot.user}')
+
+    @bot.command(name="buy")
+    async def buy(ctx, item: str, quantity: int):
+        global money
+        if money >= items[item] * quantity:
+            money -= items[item] * quantity
+            await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+        else:
+            await ctx.send('Your account does not have enough money to make this purchase')
+
+    @bot.command(name="money")
+    async def show_money(ctx):
+        global money
+        await ctx.send('You have $' + str(money) + ' left in your account')
+
+    @bot.command(name="items")
+    async def list_of_items(ctx):
+        await ctx.send('These items are available in the shop ' + str(list(items)))
 
     bot.run(TOKEN)

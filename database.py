@@ -101,10 +101,11 @@ async def record_task(ctx, task: str, time_str: str):
         print(f'Error {e}. JSON string: {result[0]}')
         await ctx.send(f'Error {e}. Failed to load tasks from database.')
 
-
-# close database connection
-cursor.close()
-conn.close()
+# closing the database is currently causing an issue; need to look into it so i've commented it out for now
+# shouldn't cause any issues because the database is currently stored locally on my laptop
+# # close database connection
+# cursor.close()
+# conn.close()
 
 bot.run(
     'MTEwMTYzODEwNTg1OTEwNDc2OA.GEWumY.Q4rY9e0zlpF-mUqWvJj4ODIyT93JZ4gZs8MZgY')

@@ -23,8 +23,7 @@ def run_discord_bot():
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                     user_id TEXT PRIMARY KEY NOT NULL,
-                    task TEXT,
-                    time DATETIME,
+                    tasks TEXT DEFAULT '{}',
                     complete BOOL,
                     incomplete BOOL)''')
     ###

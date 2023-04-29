@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from discord.ext import commands, tasks
 import sqlite3
 import json
-import random
 
 def run_discord_bot():
     ###
@@ -51,8 +50,11 @@ def run_discord_bot():
             username = ctx.author.name
             discriminator = ctx.author.discriminator
             user_id = f"{username}#{discriminator}"
-            cursor.execute("INSERT INTO users (user_id, task) VALUES (?, '')", (user_id,))
+            cursor.execute("INSERT INTO users (user_id, tasks) VALUES (?, '')", (user_id,))
             conn.commit()
+            await ctx.send('Registration complete!')
+        else:
+            await ctx.send('You are already registered!')
 
         # close database connection
         # cursor.close()
@@ -82,7 +84,7 @@ def run_discord_bot():
             cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
             conn.commit()
 
-            await ctx.send(f'Recorded task {task}. Reminder set for {time_formatted}.')
+            await ctx.send(f'Recorded task "{task}". Reminder set for {time_formatted}.')
         except ValueError as e:
             await ctx.send(f'Error {e}. Invalid time format. Please use the format "HH:MM AM/PM".')
         except json.JSONDecodeError as e:

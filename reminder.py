@@ -23,7 +23,7 @@ def send_reminders(time: datetime, bot):
 
     for task in tasks:
         user = bot.get_user(task[0])  # Need to test if this works
-        await user.send(f"Reminder: {task[1]}")
+        user.send(f"Reminder: {task[1]}")
 
 def db_get_tasks():
     pass

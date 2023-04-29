@@ -14,4 +14,4 @@ def check_in_db(ctx):
         cursor.execute("INSERT INTO users (user_id, task) VALUES (?, '')", (user_id,))
         conn.commit()
     else:
-        await ctx.send('You have already registered!')
+        await ctx.send('Something')

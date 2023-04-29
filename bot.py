@@ -100,10 +100,6 @@ def run_discord_bot():
         await bot.wait_until_ready()
 
     # The following code has to do with the shop functionality within the bot
-        
-    @bot.event
-    async def on_ready():
-        print(f'We have logged in as {bot.user}')
 
     @bot.command(name="buy")
     async def buy(ctx, item: str, quantity: int):

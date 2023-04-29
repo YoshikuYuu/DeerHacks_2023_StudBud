@@ -10,3 +10,5 @@ def print_db():
 
      for row in rows:
           print(row)
+
+print_db()

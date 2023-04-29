@@ -12,7 +12,7 @@ def run_discord_bot():
     intents = discord.Intents.default()
     intents.message_content = True
 
-    bot = commands.Bot(command_prefix='!', intents=intents)
+    bot = commands.Bot(command_prefix='$', intents=intents)
 
     # Following code makes a database with user, task, and time
         # Store time as datetime object if possible?
@@ -36,25 +36,17 @@ def run_discord_bot():
         await ctx.send(f'Hi, {ctx.author.mention}')
 
 
-    @bot.command(name="register")
-    async def register(ctx):
-        # checking if they're already in db
-        username = ctx.author.name
-        discriminator = ctx.author.discriminator
+    def _user_in_db(username, discriminator) -> bool:
+        """ Check if a user is already in the database."""
         user_id = f"{username}#{discriminator}"
         cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
         result = cursor.fetchone()
+        return result
 
-        # if they're not in db add them
-        if not result:
-            username = ctx.author.name
-            discriminator = ctx.author.discriminator
-            user_id = f"{username}#{discriminator}"
-            cursor.execute("INSERT INTO users (user_id, tasks) VALUES (?, '')", (user_id,))
-            conn.commit()
-            await ctx.send('Registration complete!')
-        else:
-            await ctx.send('You are already registered!')
+    def _add_user_to_db(username, discriminator):
+        user_id = f"{username}#{discriminator}"
+        cursor.execute("INSERT INTO users (user_id, tasks) VALUES (?, '')", (user_id,))
+        conn.commit()
 
         # close database connection
         # cursor.close()
@@ -62,6 +54,8 @@ def run_discord_bot():
 
     @bot.command(name='task')
     async def record_task(ctx, task: str, time_str: str):
+        if not _user_in_db(ctx.author.name, ctx.author.discriminator):
+            _add_user_to_db(ctx.author.name, ctx.author.discriminator)
         try:
             # remember to convert time_str into the appropriate format
             time = datetime.strptime(str(time_str), '%I:%M')
@@ -84,12 +78,10 @@ def run_discord_bot():
             cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
             conn.commit()
 
-            await ctx.send(f'Recorded task "{task}". Reminder set for {time_formatted}.')
+            await ctx.send(f'Recorded task: "{task}". Reminder set for {time_formatted}.')
+
         except ValueError as e:
             await ctx.send(f'Error {e}. Invalid time format. Please use the format "HH:MM AM/PM".')
-        except json.JSONDecodeError as e:
-            print(f'Error {e}. JSON string: {result[0]}')
-            await ctx.send(f'Error {e}. Failed to load tasks from database.')
 
 
     @tasks.loop(minutes=1)

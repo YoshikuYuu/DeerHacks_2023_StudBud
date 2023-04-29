@@ -99,9 +99,8 @@ def run_discord_bot():
     async def before_check_time():
         await bot.wait_until_ready()
 
-    items = {'test': 50, 'test2': 20, 'test3': 10}  # item name: price of item
-    money = 50  # add how much money the person has
-
+    # The following code has to do with the shop functionality within the bot
+        
     @bot.event
     async def on_ready():
         print(f'We have logged in as {bot.user}')

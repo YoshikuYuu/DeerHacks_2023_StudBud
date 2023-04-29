@@ -23,11 +23,12 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                     time DATETIME,
                     complete BOOL,
                     incomplete BOOL)''')
-cursor.execute("SELECT * FROM users")
-rows = cursor.fetchall()
+# # prints database
+# cursor.execute("SELECT * FROM users")
+# rows = cursor.fetchall()
 
-for row in rows:
-    print(row)
+# for row in rows:
+#     print(row)
 
 
 @bot.event

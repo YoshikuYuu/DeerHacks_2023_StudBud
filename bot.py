@@ -30,7 +30,7 @@ def run_discord_bot():
 
         if current_datetime in reminders:
             # Unimplemented: Get reminder details from db and send ping/dm
-            send_reminders(current_datetime)
+            send_reminders(current_datetime, bot)
 
 
     @check_time.before_loop

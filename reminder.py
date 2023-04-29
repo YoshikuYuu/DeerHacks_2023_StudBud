@@ -1,18 +1,26 @@
 from __future__ import annotations
 from datetime import datetime
-from bot import bot
+from discord.ext import commands
 
 
 def get_reminders():
     pass
 
-def send_reminders(time: datetime):
-    # Unimplemented: function to get all user ids from db that have a task that
-    # corresponds to time
-    user_ids = db_get_user_ids(time)
 
-    for id in user_ids:
-        user = bot.get_user(id)  # Need to test if this works
-        await user.send("Reminder message.")
+def send_reminders(time: datetime, bot):
+    """
+    Gets all tasks that correspond to the given time and sends reminders for
+    the tasks.
 
+    :param time: datetime object storing a reminder time
+    :param bot: discord bot
+    :return: None
+    """
 
+    # Unimplemented: function to get a list of tuples (u_id, task_name) from db
+    # that have a task that corresponds to time
+    tasks = db_get_tasks(time)
+
+    for task in tasks:
+        user = bot.get_user(task[0])  # Need to test if this works
+        await user.send(f"Reminder: {task[1]}")

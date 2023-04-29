@@ -1,3 +1,7 @@
+#ALL OF THIS HAS BEEN INTEGRATED INTO BOT.PY
+
+
+
 '''A collection of functions that interact with the sqlite3 database.'''
 import discord
 import random
@@ -65,7 +69,7 @@ async def on_message(message):
         await message.channel.send(response)
     elif message.content == 'raise-exception':
         raise discord.DiscordException
-        
+
 @bot.command(name='task')
 async def record_task(ctx, task: str, time_str: str):
     try:

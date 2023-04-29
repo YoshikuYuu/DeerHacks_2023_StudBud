@@ -103,6 +103,7 @@ def run_discord_bot():
 
     @bot.command(name="buy")
     async def buy(ctx, item: str, quantity: int):
+        # Allows the user to buy items by taking in a desired item and the quantity
         global money
         if money >= items[item] * quantity: # Change the items[item] term to link with the SQL server since it currently runs with the dictionary I made to test the code out
             money -= items[item] * quantity
@@ -112,11 +113,13 @@ def run_discord_bot():
 
     @bot.command(name="money")
     async def show_money(ctx):
+        # Shows how much money the user has remaining
         global money
         await ctx.send('You have $' + str(money) + ' left in your account')
 
     @bot.command(name="items")
     async def list_of_items(ctx):
+        # Lists the available shop items
         await ctx.send('These items are available in the shop ' + str(list(items)))
 
     bot.run(TOKEN)

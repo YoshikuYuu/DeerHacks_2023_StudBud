@@ -104,7 +104,7 @@ def run_discord_bot():
     @bot.command(name="buy")
     async def buy(ctx, item: str, quantity: int):
         global money
-        if money >= items[item] * quantity: # Change the items[item] term to link with the SQL server since it currently runs with the dictionary I made to test the code out, but this must be changed
+        if money >= items[item] * quantity: # Change the items[item] term to link with the SQL server since it currently runs with the dictionary I made to test the code out
             money -= items[item] * quantity
             await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
         else:

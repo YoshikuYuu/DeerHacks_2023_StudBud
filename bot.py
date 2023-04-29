@@ -24,14 +24,13 @@ def run_discord_bot():
 
     @tasks.loop(minutes=1)
     async def check_time():
-        # Unimplmeneted: Get list of datetime objects from db
+        # Unimplmented: Get list of datetime objects from db
         reminders = get_reminders()
         current_datetime = datetime.now(timezone.utc)
 
         if current_datetime in reminders:
             # Unimplemented: Get reminder details from db and send ping/dm
             send_reminders(current_datetime, bot)
-
 
     @check_time.before_loop
     # Waits for the bot to start up before beginning the check_time loop

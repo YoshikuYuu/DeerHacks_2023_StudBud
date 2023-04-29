@@ -1,9 +1,9 @@
-'''A collection of functions that interact with the sqlite3 database.'''
 import discord
 import random
 from discord.ext import commands
 import sqlite3
 from datetime import datetime
+import json
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -19,8 +19,7 @@ conn = sqlite3.connect('my_database.db')
 cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                     user_id TEXT PRIMARY KEY NOT NULL,
-                    task TEXT,
-                    time DATETIME,
+                    tasks TEXT DEFAULT '{}',
                     complete BOOL,
                     incomplete BOOL)''')
 # # prints database
@@ -30,9 +29,9 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
 # for row in rows:
 #     print(row)
 
-
-# bot event that initializes user in database if the user isn't already in the database
-# user is initialized with their name, an empty string as a task, and None as time
+# initializes database with user if the user is new and sends message
+# note that this doesn't correctly handle the case where the first message is a !task command
+# TODO: fix issue outlined in above comment
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -51,45 +50,8 @@ async def on_message(message):
         username = message.author.name
         discriminator = message.author.discriminator
         user_id = f"{username}#{discriminator}"
-        cursor.execute("INSERT INTO users (user_id, task) VALUES (?, '')", (user_id,))
+        cursor.execute("INSERT INTO users (user_id, tasks) VALUES (?, '')", (user_id,))
         conn.commit()
-
-# bot command to record tasks; current format example -> !task "do laundry" 7:02
-# note that multiple tasks are stored in JSON format
-# bug in code about time storage that i'm currently fixing - alisha
-@bot.command(name='task')
-async def record_task(ctx, task: str, time_str: str):
-    try:
-        # remember to convert time_str into the appropriate format
-        time = datetime.strptime(str(time_str), '%I:%M')
-        time_formatted = time.strftime('%H:%M')
-        username = ctx.author.name
-        discriminator = ctx.author.discriminator
-        user_id = f"{username}#{discriminator}"
-
-        cursor.execute("SELECT task FROM users WHERE user_id=?", (user_id,))
-        result = cursor.fetchone()
-        if result is not None and result != '':
-            try:
-                current_tasks = json.loads(result[0])
-            except json.JSONDecodeError:
-                current_tasks = []
-        else:
-            current_tasks = []
-        current_tasks.append({"task": task, "time": time_formatted})
-        cursor.execute("REPLACE INTO users (user_id, task) VALUES (?, ?)", (user_id, json.dumps(current_tasks)))
-        conn.commit()
-
-        await ctx.send(f'Recorded task {task}. Reminder set for {time_formatted}.')
-    except ValueError as e:
-        await ctx.send(f'Error {e}. Invalid time format. Please use the format "HH:MM AM/PM".')
-    except json.JSONDecodeError as e:
-        print(f'Error {e}. JSON string: {result[0]}')
-        await ctx.send(f'Error {e}. Failed to load tasks from database.')
-
-    # close database connection
-    cursor.close()
-    conn.close()
 
     encouraging_quotes = [
         'Keep going, you can do it!', 'I believe in you!',
@@ -101,3 +63,48 @@ async def record_task(ctx, task: str, time_str: str):
         await message.channel.send(response)
     elif message.content == 'raise-exception':
         raise discord.DiscordException
+
+# records a task in the database
+# sample format for task command -> !task "study for math test" 11:00
+# TODO: correctly handle time objects in order to search for time and ping when required
+# sample database row when two tasks are stored looks like this:
+# ('thepandabear123#4256', '{"do laundry": "06:00", "study for math test": "11:00"}', None, None)
+# TODO: handle cases where the task is complete/incomplete (how do we keep track?)
+@bot.command(name='task')
+async def record_task(ctx, task: str, time_str: str):
+    try:
+        # remember to convert time_str into the appropriate format
+        time = datetime.strptime(str(time_str), '%I:%M')
+        time_formatted = time.strftime('%H:%M')
+        username = ctx.author.name
+        discriminator = ctx.author.discriminator
+        user_id = f"{username}#{discriminator}"
+
+        cursor.execute("SELECT tasks FROM users WHERE user_id=?", (user_id,))
+        result = cursor.fetchone()
+        if result is not None and result != '':
+            try:
+                current_tasks = json.loads(result[0])
+            except json.JSONDecodeError:
+                current_tasks = {}
+        else:
+            current_tasks = {}
+
+        current_tasks[task] = time_formatted
+        cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
+        conn.commit()
+
+        await ctx.send(f'Recorded task {task}. Reminder set for {time_formatted}.')
+    except ValueError as e:
+        await ctx.send(f'Error {e}. Invalid time format. Please use the format "HH:MM AM/PM".')
+    except json.JSONDecodeError as e:
+        print(f'Error {e}. JSON string: {result[0]}')
+        await ctx.send(f'Error {e}. Failed to load tasks from database.')
+
+
+# close database connection
+cursor.close()
+conn.close()
+
+bot.run(
+    'MTEwMTYzODEwNTg1OTEwNDc2OA.GEWumY.Q4rY9e0zlpF-mUqWvJj4ODIyT93JZ4gZs8MZgY')

@@ -2,7 +2,7 @@ from __future__ import annotations
 from datetime import datetime
 from discord.ext import commands
 from bot import *
-from database import *
+import json
 
 
 def _get_reminders_helper(times):
@@ -15,7 +15,7 @@ def _get_reminders_helper(times):
     return new_times
 
 
-def get_reminders():
+def get_reminders(cursor):
     cursor.execute("SELECT user_id, tasks FROM users")
     values = cursor.fetchall()
     reminders = []
@@ -27,23 +27,10 @@ def get_reminders():
     return reminders
 
 
-def db_get_tasks(time):
-    cursor.execute("SELECT user_id, tasks FROM users")
-    values = cursor.fetchall()
-    matching_tasks = []
-    for value in values:
-        user_id = value[0]
-        tasks = json.loads(row[1])
-        for task, time_str in tasks.items():
-            # converting time_str into datetime object to compare to
-            # datetime.datetime.now()
-            task_time = datetime.strptime(time_str, '%H:%M')
-            if task_time == time:
-                matching_tasks.append((user_id, task))
-    return matching_tasks
 
 
-def send_reminders(time: datetime, bot):
+
+def send_reminders(cursor, time: datetime, bot):
     """
     Gets all tasks that correspond to the given time and sends reminders for
     the tasks.
@@ -55,11 +42,9 @@ def send_reminders(time: datetime, bot):
 
     # Unimplemented: function to get a list of tuples (u_id, task_name) from db
     # that have a task that corresponds to time
-    tasks = db_get_tasks(time)
+    tasks = db_get_tasks(cursor, time)
 
     for task in tasks:
         user = bot.get_user(task[0])  # Need to test if this works
         user.send(f"Reminder: {task[1]}")
 
-def db_get_tasks():
-    pass

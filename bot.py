@@ -103,23 +103,95 @@ def run_discord_bot():
 
     @bot.command(name="buy")
     async def buy(ctx, item: str, quantity: int):
-        # Allows the user to buy items by taking in a desired item and the quantity
+        # Allows user to buy items
         global money
-        if money >= items[item] * quantity: # Change the items[item] term to link with the SQL server since it currently runs with the dictionary I made to test the code out
-            money -= items[item] * quantity
-            await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+        if item == 'colours':
+            if money >= 30 * quantity:
+                for i in range(0, quantity):
+                    await ctx.send('```fix\nHello```')
+                    await ctx.send('```arm\nHello```')
+                    await ctx.send('```elm\nHello```')
+                    await ctx.send('```ini\n[Hello]```')
+                    money -= quantity * 30 # Example price, change later
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
+        elif item == 'pixelart':
+            if money >= 50 * quantity:
+                for i in range(0, quantity):
+                    await ctx.send('□□□□□□□□□□□□□□□□□□□□□□□□□□■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□□□□■□□□□□□□□□□■□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□□□■□■□□□□□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□□■□□□□□□□□□□□□□■■■■■■□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□■□□□■□□□□□□□■□□□□□□□□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□■□□□□□■□□□■□□□□□□□□□□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□■□□□□□□□■□□□□□□□□□□□□□□□■■■■■□□■□□□■□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□■□□□□□■□□□■□□□□□□□□□□□□□■□□□■□□□□■□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□■□□□■□□□□□□□■□□□□□□□□□□□■■■■■□□■□□□■□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□■□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    await ctx.send('□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
+                    money -= 50 # Example price
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
+        elif item == 'beginner':
+            if money >= 2:
+                money -= 2
+                user = ctx.author
+                beginner = discord.utils.get(ctx.guild.roles, name="Beginner")
+                await user.add_roles(beginner)
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
+        elif item == 'apprentice':
+            if money >= 10:
+                money -= 10
+                user = ctx.author
+                apprentice = discord.utils.get(ctx.guild.roles, name="Apprentice")
+                await user.add_roles(apprentice)
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
+        elif item == 'practitioner':
+            if money >= 100:
+                money -= 100
+                user = ctx.author
+                practitioner = discord.utils.get(ctx.guild.roles, name="Practitioner")
+                await user.add_roles(practitioner)
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
+        elif item == 'master':
+            if money >= 500:
+                money -= 500
+                user = ctx.author
+                master = discord.utils.get(ctx.guild.roles, name="Master")
+                await user.add_roles(master)
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
+        elif item == 'legend':
+            if money >= 2500:
+                money -= 2500
+                user = ctx.author
+                legend = discord.utils.get(ctx.guild.roles, name="Legend")
+                await user.add_roles(legend)
+                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+            else:
+                await ctx.send('Your account does not have enough money available to make this purchase')
         else:
-            await ctx.send('Your account does not have enough money to make this purchase')
-
+        await ctx.send('Invalid item. Please try again')
     @bot.command(name="money")
     async def show_money(ctx):
-        # Shows how much money the user has remaining
+        # Shows how much money the user has remaining in their account
         global money
         await ctx.send('You have $' + str(money) + ' left in your account')
 
     @bot.command(name="items")
     async def list_of_items(ctx):
-        # Lists the available shop items
-        await ctx.send('These items are available in the shop ' + str(list(items)))
+        # Shows the list of all available items
+        await ctx.send('These items are available in the store: Roles: beginner, apprentice, practitioner, master, legend, Effects: colours, pixelart')
 
     bot.run(TOKEN)

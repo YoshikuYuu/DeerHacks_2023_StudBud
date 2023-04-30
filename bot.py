@@ -96,26 +96,25 @@ def run_discord_bot():
         print("Starting loop.")
 
 
-    # The following code has to do with the shop functionality within the bot
-
     @bot.command(name="buy")
     async def buy(ctx, item: str, quantity: int):
         # Allows user to buy items
-        global money
+        pts = get_points(cursor, ctx.author.id)
         if item == 'colours':
-            if money >= 30 * quantity:
-                for i in range(0, quantity):
+            if pts >= 30 * quantity:
+                for i in range(quantity):
                     await ctx.send('```fix\nHello```')
                     await ctx.send('```arm\nHello```')
                     await ctx.send('```elm\nHello```')
                     await ctx.send('```ini\n[Hello]```')
-                    money -= quantity * 30 # Example price, change later
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                add_points(cursor, quantity * -30, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         elif item == 'pixelart':
-            if money >= 50 * quantity:
-                for i in range(0, quantity):
+            if pts >= 50 * quantity:
+                for i in range(quantity):
                     await ctx.send('□□□□□□□□□□□□□□□□□□□□□□□□□□■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
                     await ctx.send('□□□□□□□□□□□□□■□□□□□□□□□□■□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
                     await ctx.send('□□□□□□□□□□□□■□■□□□□□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
@@ -129,69 +128,68 @@ def run_discord_bot():
                     await ctx.send('□□□□□□□■□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
                     await ctx.send('□□□□□□□□■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
                     await ctx.send('□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□')
-                    money -= 50 # Example price
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                add_points(cursor, quantity * -50, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         elif item == 'beginner':
-            if money >= 2:
-                money -= 2
+            if pts >= 2:
+                add_points(cursor, -2, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
                 user = ctx.author
                 beginner = discord.utils.get(ctx.guild.roles, name="Beginner")
                 await user.add_roles(beginner)
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         elif item == 'apprentice':
-            if money >= 10:
-                money -= 10
+            if pts >= 10:
+                add_points(cursor, -10, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
                 user = ctx.author
                 apprentice = discord.utils.get(ctx.guild.roles, name="Apprentice")
                 await user.add_roles(apprentice)
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         elif item == 'practitioner':
-            if money >= 100:
-                money -= 100
+            if pts >= 100:
+                add_points(cursor, -100, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
                 user = ctx.author
                 practitioner = discord.utils.get(ctx.guild.roles, name="Practitioner")
                 await user.add_roles(practitioner)
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         elif item == 'master':
-            if money >= 500:
-                money -= 500
+            if pts >= 500:
+                add_points(cursor, -500, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
                 user = ctx.author
                 master = discord.utils.get(ctx.guild.roles, name="Master")
                 await user.add_roles(master)
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         elif item == 'legend':
-            if money >= 2500:
-                money -= 2500
+            if pts >= 2500:
+                add_points(cursor, -2500, ctx.author.id)
+                pts = get_points(cursor, ctx.author.id)
                 user = ctx.author
                 legend = discord.utils.get(ctx.guild.roles, name="Legend")
                 await user.add_roles(legend)
-                await ctx.send('Thank you for your purchase. You have $' + str(money) + ' left in your account')
+                await ctx.send(f'Thank you for your purchase. You have {pts} points left in your account.')
             else:
-                await ctx.send('Your account does not have enough money available to make this purchase')
+                await ctx.send("You don't have enough points!")
         else:
-        await ctx.send('Invalid item. Please try again')
-        
-    @bot.command(name="money")
-    async def show_money(ctx):
-        # Shows how much money the user has remaining in their account
-        global money
-        await ctx.send('You have $' + str(money) + ' left in your account')
+            await ctx.send('Invalid item. Please try again')
 
     @bot.command(name="items")
     async def list_of_items(ctx):
         # Shows the list of all available items
         await ctx.send('These items are available in the store: Roles: beginner, apprentice, practitioner, master, legend, Effects: colours, pixelart')
 
-        
 
     bot.run(TOKEN)

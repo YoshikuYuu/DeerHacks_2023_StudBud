@@ -50,20 +50,31 @@ def run_discord_bot():
         except ValueError as e:
             await ctx.send(f'Error {e}. Invalid time format. Please use the format "HH:MM".')
 
+    @bot.command(name='todo')
+    async def display_todo(ctx):
+        user_id = str(ctx.author.id)
+        values = display_values(cursor, user_id)
+        await ctx.send(f"Tasks to do for {ctx.author.mention} :)")
+        for value in values:
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError:
+                return
+            for key in value:
+                await ctx.send(f'- {str(key)}')
+
+
     @tasks.loop(minutes=1)
     async def check_time():
-        # Unimplmented: Get list of datetime objects from db
         reminders = get_reminders(cursor)
         current_datetime = datetime.now().strftime('%d/%m/%y %H:%M')
         print(current_datetime)
-        print(reminders)
 
         if current_datetime in reminders:
-            # Unimplemented: Get reminder details from db and send ping/dm
             task_tups = send_reminders(cursor, current_datetime, bot)
 
             for task in task_tups:
-                user = await bot.fetch_user(int(task[0]))  # Need to test if this works
+                user = await bot.fetch_user(int(task[0]))
                 await user.send(f"Reminder to complete task: {task[1]}")
 
     @check_time.before_loop

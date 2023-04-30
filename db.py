@@ -55,3 +55,11 @@ def db_get_tasks(cursor, time):
             if tasks[task] == time:
                 matching_tasks.append((user_id, task))
     return matching_tasks
+
+def display_values(cursor, user_id):
+    cursor.execute("SELECT tasks FROM users WHERE user_id=?", (user_id,))
+    values = cursor.fetchone()
+    print("values:", values)
+    return values
+
+

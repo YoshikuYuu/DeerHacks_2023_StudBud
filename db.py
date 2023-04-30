@@ -64,3 +64,9 @@ def db_get_tasks_time(cursor, time):
 
 def add_points(cursor, p: int, user_id):
     cursor.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (p, user_id))
+
+
+def display_values(cursor, user_id):
+    cursor.execute("SELECT tasks FROM users WHERE user_id=?", (user_id,))
+    values = cursor.fetchone()
+    return values

@@ -59,7 +59,6 @@ def db_get_tasks(cursor, time):
 def display_values(cursor, user_id):
     cursor.execute("SELECT tasks FROM users WHERE user_id=?", (user_id,))
     values = cursor.fetchone()
-    print("values:", values)
     return values
 
 

@@ -16,13 +16,13 @@ def run_discord_bot():
 
     # Initialize database and sets conn and cursor
     conn, cursor = initialize_db()
-
     ###
 
     @bot.event
     async def on_ready():
         print(f'{bot.user} is now running')
         check_time.start()
+
 
     @bot.command(name="hi")
     async def hi(ctx):
@@ -50,6 +50,16 @@ def run_discord_bot():
         except ValueError as e:
             await ctx.send(f'Error {e}. Invalid time format. Please use the format "HH:MM".')
 
+
+    @bot.command(name='done')
+    async def done_task(ctx, finished_task: str):
+        tasks_dict = get_user_tasks(cursor, ctx.author.id)
+        for task in tasks_dict:
+            if finished_task == task:
+                add_points(cursor, 50, ctx.author.id)
+                await ctx.send("Good job on completing that task! You've earned 50 points!")
+
+
     @tasks.loop(minutes=1)
     async def check_time():
         # Unimplmented: Get list of datetime objects from db
@@ -71,8 +81,6 @@ def run_discord_bot():
     async def before_check_time():
         await bot.wait_until_ready()
         print("Starting loop.")
-
-
 
 
     bot.run(TOKEN)

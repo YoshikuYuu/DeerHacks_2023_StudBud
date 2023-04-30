@@ -39,7 +39,7 @@ def send_reminders(cursor, time: str, bot) -> list:
 
     # Unimplemented: function to get a list of tuples (u_id, task_name) from db
     # that have a task that corresponds to time
-    task_tups = db_get_tasks(cursor, time)
+    task_tups = db_get_tasks_time(cursor, time)
     return task_tups
 
 

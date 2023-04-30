@@ -11,8 +11,7 @@ def initialize_db() -> tuple:
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                         user_id TEXT PRIMARY KEY NOT NULL,
                         tasks TEXT DEFAULT '{}',
-                        complete BOOL,
-                        incomplete BOOL)''')
+                        points INT DEFAULT 0)''')
     return conn, cursor
 
 def user_in_db(cursor, user_id) -> bool:
@@ -29,21 +28,27 @@ def add_user_to_db(cursor, conn, user_id):
     # cursor.close()
     # conn.close()
 
-def add_task(cursor, conn, user_id, task, time_formatted):
-    """ Loads user data from SQL db, converts it into a dict, adds a dict item,
-    converts the updated dict back into SQL, and updates the db."""
+def get_user_tasks(cursor, user_id) -> dict:
     cursor.execute("SELECT tasks FROM users WHERE user_id=?", (user_id,))
     result = cursor.fetchone()
     if result == ('',):
-        current_tasks = {}
+        user_tasks = {}
     else:
-        current_tasks = json.loads(result[0])
+        user_tasks = json.loads(result[0])
+    return user_tasks
+
+def add_task(cursor, conn, user_id, task, time_formatted):
+    """ Loads user data from SQL db, converts it into a dict, adds a dict item,
+    converts the updated dict back into SQL, and updates the db."""
+    current_tasks = get_user_tasks(cursor, user_id)
     current_tasks[task] = time_formatted
     print(current_tasks)
     cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
     conn.commit()
 
-def db_get_tasks(cursor, time):
+def db_get_tasks_time(cursor, time):
+    """ Returns a list of tuples containing (user_id, task) that match the
+    given time."""
     cursor.execute("SELECT user_id, tasks FROM users")
     values = cursor.fetchall()
     matching_tasks = []
@@ -55,3 +60,7 @@ def db_get_tasks(cursor, time):
             if tasks[task] == time:
                 matching_tasks.append((user_id, task))
     return matching_tasks
+
+
+def add_points(cursor, p: int, user_id):
+    cursor.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (p, user_id))

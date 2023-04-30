@@ -46,6 +46,16 @@ def add_task(cursor, conn, user_id, task, time_formatted):
     cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
     conn.commit()
 
+def delete_task(cursor, conn, user_id, task_name):
+    """ Loads user data SQL db, converts it into a dict, removes a dict item,
+    converts updated back into SQL, and updaes the db."""
+    current_tasks = get_user_tasks(cursor, user_id)
+    if current_tasks != {}:
+        current_tasks.pop(task_name)
+        print(current_tasks)
+        cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
+        conn.commit()
+
 def db_get_tasks_time(cursor, time):
     """ Returns a list of tuples containing (user_id, task) that match the
     given time."""
@@ -64,6 +74,12 @@ def db_get_tasks_time(cursor, time):
 
 def add_points(cursor, p: int, user_id):
     cursor.execute("UPDATE users SET points = points + ? WHERE user_id = ?", (p, user_id))
+
+
+def get_points(cursor, user_id):
+    cursor.execute('SELECT points FROM users WHERE user_id=?', (user_id,))
+    result = cursor.fetchone()
+    return int(result[0])
 
 
 def display_values(cursor, user_id):

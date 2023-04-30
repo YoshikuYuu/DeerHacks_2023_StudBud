@@ -55,7 +55,8 @@ def run_discord_bot():
         for task in tasks_dict:
             if finished_task == task:
                 add_points(cursor, 50, ctx.author.id)
-                await ctx.send("Good job on completing that task! You've earned 50 points!")
+                delete_task(cursor, conn, ctx.author.id, finished_task)
+                await ctx.send(f"Good job on completing {finished_task}! You've earned 50 points!")
 
     @bot.command(name='todo')
     async def display_todo(ctx):
@@ -69,6 +70,11 @@ def run_discord_bot():
                 return
             for key in value:
                 await ctx.send(f'- {str(key)}')
+
+    @bot.command(name="points")
+    async def points(ctx):
+        p = get_points(cursor, ctx.author.id)
+        await ctx.send(f'You have {p} points.')
 
     @tasks.loop(minutes=1)
     async def check_time():

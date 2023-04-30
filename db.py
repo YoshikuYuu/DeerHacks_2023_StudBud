@@ -34,11 +34,12 @@ def add_task(cursor, conn, user_id, task, time_formatted):
     converts the updated dict back into SQL, and updates the db."""
     cursor.execute("SELECT tasks FROM users WHERE user_id=?", (user_id,))
     result = cursor.fetchone()
-    if result is not None and result != '':
-        current_tasks = json.loads(result[0])
-    else:
+    if result == ('',):
         current_tasks = {}
+    else:
+        current_tasks = json.loads(result[0])
     current_tasks[task] = time_formatted
+    print(current_tasks)
     cursor.execute("UPDATE users SET tasks=? WHERE user_id=?", (json.dumps(current_tasks), user_id))
     conn.commit()
 
@@ -49,10 +50,8 @@ def db_get_tasks(cursor, time):
     for value in values:
         user_id = value[0]
         tasks = json.loads(value[1])
-        for task, time_str in tasks.items():
-            # converting time_str into datetime object to compare to
-            # datetime.datetime.now()
-            task_time = datetime.strptime(time_str, '%H:%M')
-            if task_time == time:
+        print(tasks)
+        for task in tasks:
+            if tasks[task] == time:
                 matching_tasks.append((user_id, task))
     return matching_tasks
